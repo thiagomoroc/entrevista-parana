@@ -256,7 +256,7 @@ const T={
   reviseBtn:'Review that question',
   beautyRes:'Attractiveness ratings',
   json:'Raw answers (JSON)', copy:'Copy', copied:'Copied', copyFail:'Copy not available here. Select the text and copy it.',
-  tools:'Prototype tools', fill:'Fill with example answers', fillRand:'Fill with random answers (tests the check)', restart:'Restart',
+  tools:'Prototype tools', fill:'Fill with example answers', fillRand:'Fill with random answers (tests the check)', restart:'Restart', previewThanks:'Preview thank-you screen',
   submit:'Submit answers', sending:'Sending your answers...',
   thanksTitle:'Thank you!', thanksLead:'Your answers have been received. You can close this page now.',
   failTitle:'Your answers have not been sent yet',
@@ -333,7 +333,7 @@ const T={
   reviseBtn:'Rever essa pergunta',
   beautyRes:'Avaliações de atratividade',
   json:'Respostas em bruto (JSON)', copy:'Copiar', copied:'Copiado', copyFail:'Cópia indisponível aqui. Selecione o texto e copie.',
-  tools:'Ferramentas do protótipo', fill:'Preencher com respostas de exemplo', fillRand:'Preencher com respostas aleatórias (testa a verificação)', restart:'Recomeçar',
+  tools:'Ferramentas do protótipo', fill:'Preencher com respostas de exemplo', fillRand:'Preencher com respostas aleatórias (testa a verificação)', restart:'Recomeçar', previewThanks:'Ver tela de agradecimento',
   submit:'Enviar respostas', sending:'A enviar as suas respostas...',
   thanksTitle:'Obrigado!', thanksLead:'As suas respostas foram recebidas. Já pode fechar esta página.',
   failTitle:'As suas respostas ainda não foram enviadas',
@@ -651,7 +651,7 @@ function render(){
   else if(S.step==='send') h=viewSend();
   else if(isTest()) h=viewResult();
   else {S.step='beauty'; h=viewBeauty();}
-  if(isTest()) h+=`<footer class="tools"><span>${esc(L.tools)}:</span><button type="button" data-act="fill">${esc(L.fill)}</button><button type="button" data-act="fillrand">${esc(L.fillRand)}</button><button type="button" data-act="restart">${esc(L.restart)}</button></footer>`;
+  if(isTest()) h+=`<footer class="tools"><span>${esc(L.tools)}:</span><button type="button" data-act="fill">${esc(L.fill)}</button><button type="button" data-act="fillrand">${esc(L.fillRand)}</button><button type="button" data-act="restart">${esc(L.restart)}</button><button type="button" data-act="previewthanks">${esc(L.previewThanks)}</button></footer>`;
   if(S.lb) h+=viewLightbox();
   app.className='wrap'+(S.step==='beauty'?' wide':'');
   app.innerHTML=h; progress();
@@ -714,6 +714,7 @@ document.addEventListener('click',e=>{
   else if(a==='restart'){Object.assign(S,{step:'intro',qi:0,consent:false,profile:{type:'',years:'',country:''},ans:{},beauty:{},order:mkOrder(),fromResult:false,id:newId(),send:{status:'idle',data:null}}); resetCheck();}
   else if(a==='submit'){ if(DEST.some(d=>!d.locked&&!S.beauty[d.id])) return; S.step='send'; sendAnswers(); return; }
   else if(a==='retry'){ sendAnswers(); return; }
+  else if(a==='previewthanks'){ S.step='send'; S.send={status:'sent',data:null}; }  /* #test only: shows the thank-you screen and sends nothing */
   else if(a==='copy'){
     const ta=document.getElementById('json'), msg=document.getElementById('copymsg');
     const fail=()=>{ta.focus();ta.select();msg.textContent=t().copyFail;};
