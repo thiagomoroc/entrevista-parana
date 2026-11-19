@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Paraná Tourism Survey</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Layout idea: one calm column, one question per screen, a thin progress rail on top. */
+  --bg:#f3f6f5; --surface:#ffffff; --ink:#10241e; --muted:#53655f; --line:#d3ded9;
+  --accent:#0f6e7a; --accent-ink:#ffffff; --accent-soft:#dcedef;
+  --warn:#8f4f00; --warn-soft:#fbeed8; --bad:#a3262a; --good:#1c6f45; --good-soft:#dff1e7;
+  --display:'Newsreader',Georgia,serif; --body:'Public Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1a17; --surface:#16262a; --ink:#e7f0ed; --muted:#9db1aa; --line:#2b403a;
+    --accent:#4fc0cd; --accent-ink:#06262b; --accent-soft:#17383d;
+    --warn:#f0b35c; --warn-soft:#3a2a10; --bad:#ff8a8d; --good:#6fd3a0; --good-soft:#15392a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1a17; --surface:#16262a; --ink:#e7f0ed; --muted:#9db1aa; --line:#2b403a;
+  --accent:#4fc0cd; --accent-ink:#06262b; --accent-soft:#17383d;
+  --warn:#f0b35c; --warn-soft:#3a2a10; --bad:#ff8a8d; --good:#6fd3a0; --good-soft:#15392a;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
+h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.2;text-wrap:balance;margin:0}
+h1{font-size:clamp(1.7rem,4vw,2.3rem)} h2{font-size:1.45rem} h3{font-size:1.15rem}
+p{margin:0}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px 56px}
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.top-in{max-width:760px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px;justify-content:space-between}
+.brand{font-family:var(--display);font-weight:600;font-size:1.05rem}
+.lang{display:flex;gap:4px}
+.lang button{font:inherit;font-size:.85rem;padding:4px 10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.rail{height:4px;background:var(--line)}
+.rail > i{display:block;height:100%;background:var(--accent);transition:width .25s}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px;margin-top:20px}
+.eyebrow{font-size:.8rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.lead{color:var(--muted);margin-top:10px}
+.about{border-top:1px solid var(--line);padding-top:14px;font-size:.92rem;color:var(--muted)}
+.about b{color:var(--ink)}
+.about p + p{margin-top:8px}
+.stack > * + *{margin-top:14px}
+label.field{display:block;font-weight:600;font-size:.95rem}
+select{font:inherit;width:100%;margin-top:6px;padding:10px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:.95rem}
+.check input{margin-top:4px;width:18px;height:18px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-top:22px}
+button.btn{font:inherit;font-weight:600;padding:11px 20px;border-radius:8px;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);cursor:pointer}
+button.btn.ghost{background:transparent;color:var(--accent)}
+button.btn:disabled{opacity:.4;cursor:not-allowed}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+.opt{border:1px solid var(--line);border-radius:10px;padding:14px;background:var(--bg)}
+.opt b{display:block;font-family:var(--display);font-size:1.1rem;margin-bottom:4px}
+.opt span{color:var(--muted);font-size:.9rem}
+.opt.on{border-color:var(--accent);background:var(--accent-soft)}
+.scale{display:grid;grid-template-columns:repeat(9,1fr);gap:6px;margin-top:20px}
+.scale button{aspect-ratio:1;min-height:36px;border-radius:50%;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:600;font-size:.9rem;cursor:pointer;padding:0}
+.scale button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.scale-ends{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted);margin-top:8px;gap:8px}
+.verdict{margin-top:14px;min-height:1.5em;font-weight:600;text-align:center}
+.rv{border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:10px;background:var(--bg)}
+.rv.worst{border-color:var(--warn);background:var(--warn-soft)}
+.rv-t{font-size:.95rem}
+.rv-t span{color:var(--muted);margin:0 4px}
+.rv-s{display:grid;grid-template-columns:repeat(9,1fr);gap:4px;margin-top:8px}
+.rv-s button{padding:7px 0;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:600;font-size:.85rem;cursor:pointer}
+.rv-s button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.rv-e{display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted);margin-top:4px;gap:8px}
+.rv-h{margin-top:8px;font-size:.9rem;color:var(--warn);font-weight:600}
+.wrap.wide{max-width:1080px}
+.dests{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,420px),1fr));gap:16px;margin-top:18px}
+.dest{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface);display:flex;flex-direction:column}
+.strip{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--line)}
+.strip button,.strip .ph{aspect-ratio:4/3;padding:0;border:0;margin:0;background:var(--bg);overflow:hidden;display:block;min-width:0}
+.strip button{cursor:zoom-in}
+.strip img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .2s}
+.strip button:hover img{transform:scale(1.05)}
+.ph{display:flex !important;align-items:center;justify-content:center;text-align:center;font-size:.75rem;color:var(--muted);padding:6px !important;background:repeating-linear-gradient(135deg,var(--bg),var(--bg) 8px,var(--line) 8px,var(--line) 9px) !important}
+.dest .body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:6px;flex:1}
+.dest .body span{font-size:.88rem;color:var(--muted);flex:1}
+.dest .body span.badge{flex:none;align-self:flex-start;background:var(--accent-soft);color:var(--accent);font-weight:600;font-size:.75rem;letter-spacing:.03em;text-transform:uppercase;padding:2px 10px;border-radius:999px}
+.lb{position:fixed;inset:0;z-index:20;background:rgba(6,14,12,.9);display:flex;align-items:center;justify-content:center;gap:8px;padding:16px}
+.lb figure{margin:0;max-width:min(92vw,980px);max-height:92vh;display:flex;flex-direction:column;gap:10px;align-items:center}
+.lb img{max-width:100%;max-height:78vh;border-radius:8px;object-fit:contain}
+.lb figcaption{color:#e7f0ed;font-size:.95rem;text-align:center}
+.lb button{font:inherit;background:rgba(255,255,255,.14);color:#fff;border:0;border-radius:999px;width:44px;height:44px;font-size:1.5rem;line-height:1;cursor:pointer;flex:none}
+.lb button:hover{background:rgba(255,255,255,.28)}
+.lb .lb-x{position:absolute;top:14px;right:14px}
+.rate{display:grid;grid-template-columns:repeat(9,1fr);gap:3px;margin-top:6px}
+.rate button{padding:7px 0;font-size:.85rem;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-weight:600;cursor:pointer}
+.rate button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.rate-ends{display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted)}
+.bars{display:grid;gap:8px;margin-top:12px}
+.bar{display:grid;grid-template-columns:150px 1fr 52px;gap:10px;align-items:center;font-size:.92rem}
+.bar .track{height:12px;background:var(--line);border-radius:6px;overflow:hidden}
+.bar .track i{display:block;height:100%;background:var(--accent)}
+.bar em{font-style:normal;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.pill{display:inline-block;padding:2px 10px;border-radius:999px;font-size:.82rem;font-weight:600}
+.pill.good{background:var(--good-soft);color:var(--good)} .pill.warn{background:var(--warn-soft);color:var(--warn)}
+.note{background:var(--warn-soft);color:var(--warn);border-radius:10px;padding:12px 14px;font-size:.9rem}
+.proto{background:var(--accent-soft);color:var(--ink);border-radius:10px;padding:10px 14px;font-size:.88rem;margin-top:20px}
+textarea{width:100%;min-height:150px;font:12px/1.4 ui-monospace,Menlo,monospace;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:10px}
+table{width:100%;border-collapse:collapse;font-size:.92rem;margin-top:10px}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
+td.n{text-align:right;font-variant-numeric:tabular-nums}
+footer.tools{margin-top:28px;font-size:.82rem;color:var(--muted);display:flex;gap:14px;flex-wrap:wrap}
+footer.tools button{background:none;border:0;color:var(--accent);font:inherit;text-decoration:underline;cursor:pointer;padding:0}
+@media (max-width:560px){
+  .pair{grid-template-columns:1fr}
+  .bar{grid-template-columns:110px 1fr 46px;font-size:.85rem}
+  .card{padding:16px}
+}
+@media (prefers-reduced-motion: reduce){.rail > i{transition:none}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <span class="brand" id="brand"></span>
+    <div class="lang" role="group" aria-label="Language">
+      <button id="lang-en" type="button" data-act="lang" data-v="en" aria-pressed="true">English</button>
+      <button id="lang-pt" type="button" data-act="lang" data-v="pt" aria-pressed="false">Português</button>
+    </div>
+  </div>
+  <div class="rail"><i id="bar" style="width:0%"></i></div>
+</header>
+<main class="wrap" id="app"></main>
+
+<script>
+/* ---------- AHP math (tested separately) ---------- */
+//MATH-START
+function buildMatrix(n, pairs){
+  const A = Array.from({length:n},()=>Array(n).fill(1));
+  pairs.forEach(p=>{ A[p.i][p.j]=p.v; A[p.j][p.i]=1/p.v; });
+  return A;
+}
+function priorities(A){
+  const n=A.length; let w=Array(n).fill(1/n);
+  for(let k=0;k<500;k++){
+    const x=A.map(r=>r.reduce((s,a,j)=>s+a*w[j],0));
+    const sum=x.reduce((a,b)=>a+b,0);
+    const nw=x.map(v=>v/sum);
+    const d=Math.max(...nw.map((v,i)=>Math.abs(v-w[i])));
+    w=nw; if(d<1e-13) break;
+  }
+  const Aw=A.map(r=>r.reduce((s,a,j)=>s+a*w[j],0));
+  const lambda=Aw.reduce((s,v,i)=>s+v/w[i],0)/n;
+  return {w,lambda};
+}
+const RI={1:0,2:0,3:0.58,4:0.90,5:1.12,6:1.24,7:1.32,8:1.41,9:1.45};
+function consistency(A){
+  const n=A.length; const {w,lambda}=priorities(A);
+  const CI=(lambda-n)/(n-1);
+  const cr = n>2 ? Math.max(0,CI/RI[n]) : 0;
+  return {w,lambda,CI,cr};
+}
+function worstPair(A,w){
+  let best=null;
+  for(let i=0;i<A.length;i++) for(let j=i+1;j<A.length;j++){
+    const dev=Math.abs(Math.log(A[i][j]/(w[i]/w[j])));
+    if(!best||dev>best.dev) best={i,j,dev};
+  }
+  return best;
+}
+//MATH-END
+
+/* ---------- Settings ---------- */
+const CR_LIMIT=0.10;   // a block of comparisons is accepted when CR is at or below this
+const MAX_TRIES=3;     // the respondent is blocked on checks 1 and 2; on check 3 the page lets them through (flagged by CR in the data)
+/* Answers go to a Google Apps Script web app that appends one row per response to the survey's own Google Sheet. */
+const ENDPOINT='__ENDPOINT__';
+/* Published mode: no prototype tools, no results/JSON screen. Add #test to the address to get them back. */
+const isTest=()=>location.hash==='#test';
+function newId(){
+  try{ if(crypto.randomUUID) return crypto.randomUUID(); }catch(_){}
+  const b=new Uint8Array(16); crypto.getRandomValues(b);
+  return Array.from(b,x=>x.toString(16).padStart(2,'0')).join('');
+}
+
+/* ---------- Content ---------- */
+/* Attractiveness goes first and safety last, so the very first comparison does not suggest danger. */
+const GROUPS=['beauty','activities','price','infra','safety'];
+const INFRA=['transport','lodging','food'];
+const IMG='img/';
+const DEST=[
+ {id:'curitiba',locked:true,role:'start',h:200,photos:[['curitiba---jardim-botanico','Botanical Garden','Jardim Botânico'],['curitiba---museu-do-olho','Museu do Olho','Museu do Olho'],['curitiba---opera-de-arame','Ópera de Arame','Ópera de Arame']]},
+ {id:'foz',locked:true,role:'end',h:100,photos:[['foz-do-iguacu---1','Iguaçu Falls','Cataratas do Iguaçu'],['foz-do-iguacu---2','Devil\'s Throat from the air','Garganta do Diabo vista do alto'],['foz-do-iguacu---parque-das-aves','Parque das Aves, macaws','Parque das Aves, araras']]},
+ {id:'litoral',h:190,photos:[['ilha-do-mel---deck','Ilha do Mel, deck','Ilha do Mel, deck'],['ilha-do-mel---farol','Ilha do Mel, lighthouse','Ilha do Mel, farol'],['ilha-do-mel---vista','Ilha do Mel, view','Ilha do Mel, vista']]},
+ {id:'maringalondrina',h:120,photos:[['londrina---cidade','Londrina','Londrina'],['maringa---catedral','Maringá cathedral','Catedral de Maringá'],['maringa---ruas','Maringá, tree-lined streets','Maringá, ruas arborizadas']]},
+ {id:'morretes',h:140,photos:[['morretes-e-antonina---cidade','Town centre','Centro da cidade'],['morretes---trem','Train','Trem'],['morretes---caiaque','Kayaking','Caiaque']]},
+ {id:'camposgerais',h:30,photos:[['campos-gerais---buraco-do-padre','Buraco do Padre','Buraco do Padre'],['campos-gerais---vila-velha','Vila Velha','Vila Velha'],['campos-gerais---furnas','Furnas','Furnas']]},
+ {id:'prudentopolis',h:165,photos:[['prudentopolis---salto-sao-franciso','Salto São Francisco','Salto São Francisco'],['prudentopolis---cachoeira-barao-do-rio-branco','Cachoeira Barão do Rio Branco','Cachoeira Barão do Rio Branco'],['prudentopolis---igreja','Church','Igreja']]},
+ {id:'tibagi',h:15,photos:[['tibagi---fenda-do-nick','Fenda do Nick','Fenda do Nick'],['tibagi---guartela','Guartelá','Guartelá'],['tibagi---guartela-2','Guartelá (2)','Guartelá (2)']]},
+ {id:'ribeirao',h:215,photos:[['ribeirao-claro---pedra-do-indio','Pedra do Índio','Pedra do Índio'],['riberirao-claro---vista-do-morro-do-gaviao','View from Morro do Gavião','Vista do Morro do Gavião'],['riberiao-claro---estancia-pedra-do-indio','Estância Pedra do Índio','Estância Pedra do Índio']]},
+ {id:'guarapuava',h:75,photos:[['guarapuava---cidade','Guarapuava, city centre','Guarapuava, centro da cidade'],['guarapuava---entre-rios---pesca-esportiva','Fly fishing near Entre Rios','Pesca esportiva em Entre Rios'],['guarapuava---entre-rios','Entre Rios, Danube-Swabian colony','Entre Rios, colónia dos suábios do Danúbio']]}
+];
+const T={
+ en:{
+  brand:'Paraná Tourism Survey',
+  introTitle:'Which parts of Paraná should we promote to Europe?',
+  introLead:'Paraná is a state in southern Brazil. A direct flight now links Lisbon and Curitiba. This study asks tour operators who sell Brazil which destinations, and which qualities, matter most for European travellers.',
+  time:'About 10 minutes: 13 short comparisons and 8 ratings. There are no right or wrong answers.',
+  who:'Academic research · PUCPR',
+  aboutTitle:'About this study',
+  about:'This survey is part of a course project in the Engineering programme at PUCPR (Pontifícia Universidade Católica do Paraná), in Curitiba, Brazil. Its purpose is to learn how tour operators weigh the qualities of a destination, so that the destinations of Paraná can be ranked for the European market. Answers are anonymous and used only for this academic work.',
+  contact:'Researcher: Thiago Moro · Questions: +55 41 99944-1000',
+  consent:'I agree to take part. My answers are anonymous and will be used only for academic research.',
+  start:'Start',
+  profTitle:'About you',
+  profLead:'Three quick questions so we can describe the group of operators.',
+  qType:'Your company', types:['Tour operator','Travel agent','Receptive operator (DMC)','Other'],
+  qYears:'Years selling Brazil', years:['Less than 2','2 to 5','6 to 10','More than 10'],
+  qCountry:'Main market', countries:['Portugal','Spain','France','Germany','Italy','United Kingdom','Other'],
+  choose:'Choose...',
+  part1:'Part 1 of 2 · Priorities', part2:'Part 2 of 2 · Destinations',
+  qOf:(n,t)=>`Question ${n} of ${t}`,
+  qTop:'When you build a Paraná trip for European clients, which matters more in choosing where to send them?',
+  qInfra:'Inside infrastructure and services, which matters more?',
+  moreA:'A matters more', moreB:'B matters more', equal:'Equal',
+  verbal:['Equally important','Moderately more important','Strongly more important','Very strongly more important','Extremely more important'],
+  pick:'Pick a point on the scale.',
+  back:'Back', next:'Next', toResults:'Back to results',
+  gateTitle:'Some of your answers pull in different directions',
+  gateLead:'Please take another look. The comparison marked below fits least with the rest. You can change it, or any other answer on this page.',
+  gateSuggest:(x)=>`Your other answers suggest something closer to “${x}”.`,
+  check:'Check my answers',
+  beautyTitle:'How attractive is each destination?',
+  beautyLead:'Look at the photos of each place and think about how appealing they are to your European clients. Click a photo to enlarge it. Rate from 1 to 9: 1 is not attractive, 5 is average, 9 is extremely attractive. The first and last stops of the trip come first and need no rating.',
+  shot:'Photo goes here', missing:'Photo to be added', close:'Close', prevPhoto:'Previous photo', nextPhoto:'Next photo',
+  low:'Not attractive', mid:'Average', high:'Extremely',
+  seeResults:'See results',
+  needAll:(n)=>`${n} destination(s) still need a rating.`,
+  badge:{start:'First stop',end:'Final stop'},
+  locked:{start:'Your clients arrive here, so no rating is needed.',end:'The trip ends here, so no rating is needed.'},
+  resTitle:'Your answers',
+  protoNote:'Prototype view. In the real survey the respondent sees a thank-you screen, and the answers go to the research team.',
+  wTitle:'Weight of each criterion (from your comparisons)',
+  cons:'Consistency', consTop:'Main criteria', consInfra:'Inside infrastructure and services',
+  ok:'Consistent', bad:'Needs review',
+  discard:'Would be discarded in the analysis', yes:'Yes', no:'No',
+  revise:(a,b,q)=>`Your answers about "${a}" and "${b}" fit least with the rest (question ${q}).`,
+  reviseBtn:'Review that question',
+  beautyRes:'Attractiveness ratings',
+  json:'Raw answers (JSON)', copy:'Copy', copied:'Copied', copyFail:'Copy not available here. Select the text and copy it.',
+  tools:'Prototype tools', fill:'Fill with example answers', fillRand:'Fill with random answers (tests the check)', restart:'Restart',
+  submit:'Submit answers', sending:'Sending your answers...',
+  thanksTitle:'Thank you!', thanksLead:'Your answers have been received. You can close this page now.',
+  failTitle:'Your answers have not been sent yet',
+  failLead:'The connection failed. Your answers are still on this page. Please try again.',
+  retry:'Try again',
+  failBackup:'If it keeps failing, copy the text below and send it to the researcher (contact on the first page).',
+  crit:{
+   safety:['Safety','Low risk of crime for visitors'],
+   price:['Price','Hotel rate and meal cost compared with European expectations'],
+   infra:['Infrastructure and services','Time to get there, places to stay, places to eat'],
+   activities:['Culture and things to do','Museums, heritage sites and other activities besides sightseeing'],
+   beauty:['Attractiveness','How appealing the main sights are'],
+   transport:['Travel time','How long and how hard it is to get there from the main route'],
+   lodging:['Accommodation','Availability of hotels and quality to international standard'],
+   food:['Restaurants','Local food identity and quality']
+  },
+  dest:{
+   curitiba:['Curitiba','Urban, cultural, culinary and leisure experiences.'],
+   litoral:['Coast and Ilha do Mel','Beaches, natural scenery and outdoor activities.'],
+   maringalondrina:['Maringá and Londrina','Large regional hubs, with a landmark cathedral and dense urban tree cover.'],
+   morretes:['Morretes and Antonina','Atlantic Forest landscapes and historic small towns near the coast.'],
+   camposgerais:['Campos Gerais','Vila Velha, Buraco do Padre and Furnas: striking sandstone formations.'],
+   prudentopolis:['Prudentópolis','Known as the land of giant waterfalls, with more than 100 falls.'],
+   guarapuava:['Guarapuava and Entre Rios','A highland city with the Entre Rios farming colony, known for its landscapes and fly fishing.'],
+   tibagi:['Tibagi and Guartelá','Canyon, trails, rock paintings and the Ponte de Pedra waterfall.'],
+   ribeirao:['Ribeirão Claro','Chavantes reservoir: water sports, sport fishing and paragliding.'],
+   foz:['Foz do Iguaçu','Internationally known natural attractions and tourism infrastructure.']
+  }
+ },
+ pt:{
+  brand:'Inquérito de Turismo do Paraná',
+  introTitle:'Que zonas do Paraná devemos promover na Europa?',
+  introLead:'O Paraná é um estado do sul do Brasil. Existe agora um voo direto entre Lisboa e Curitiba. Este estudo pergunta a operadores que vendem o Brasil quais os destinos, e quais as qualidades, que mais contam para o viajante europeu.',
+  time:'Cerca de 10 minutos: 13 comparações curtas e 8 avaliações. Não há respostas certas ou erradas.',
+  who:'Investigação académica · PUCPR',
+  aboutTitle:'Sobre este estudo',
+  about:'Este inquérito faz parte de um trabalho de uma disciplina do curso de Engenharia da PUCPR (Pontifícia Universidade Católica do Paraná), em Curitiba, no Brasil. O objetivo é perceber como os operadores avaliam as qualidades de um destino, para ordenar os destinos do Paraná para o mercado europeu. As respostas são anónimas e usadas apenas neste trabalho académico.',
+  contact:'Investigador: Thiago Moro · Dúvidas: +55 41 99944-1000',
+  consent:'Aceito participar. As minhas respostas são anónimas e serão usadas apenas para investigação académica.',
+  start:'Começar',
+  profTitle:'Sobre si',
+  profLead:'Três perguntas rápidas para descrevermos o grupo de operadores.',
+  qType:'A sua empresa', types:['Operador turístico','Agência de viagens','Operador recetivo (DMC)','Outro'],
+  qYears:'Anos a vender o Brasil', years:['Menos de 2','2 a 5','6 a 10','Mais de 10'],
+  qCountry:'Mercado principal', countries:['Portugal','Espanha','França','Alemanha','Itália','Reino Unido','Outro'],
+  choose:'Escolher...',
+  part1:'Parte 1 de 2 · Prioridades', part2:'Parte 2 de 2 · Destinos',
+  qOf:(n,t)=>`Pergunta ${n} de ${t}`,
+  qTop:'Quando monta uma viagem ao Paraná para clientes europeus, o que pesa mais na escolha dos locais a visitar?',
+  qInfra:'Dentro de infraestrutura e serviços, o que pesa mais?',
+  moreA:'A pesa mais', moreB:'B pesa mais', equal:'Igual',
+  verbal:['Igualmente importantes','Moderadamente mais importante','Fortemente mais importante','Muito fortemente mais importante','Extremamente mais importante'],
+  pick:'Escolha um ponto na escala.',
+  back:'Voltar', next:'Seguinte', toResults:'Voltar aos resultados',
+  gateTitle:'Algumas das suas respostas apontam em sentidos diferentes',
+  gateLead:'Reveja, por favor. A comparação marcada abaixo é a que menos combina com as restantes. Pode alterá-la, ou alterar qualquer outra resposta desta página.',
+  gateSuggest:(x)=>`As suas outras respostas sugerem algo mais próximo de “${x}”.`,
+  check:'Verificar as minhas respostas',
+  beautyTitle:'Quão atrativo é cada destino?',
+  beautyLead:'Veja as fotografias de cada local e pense no quanto agradam aos seus clientes europeus. Clique numa fotografia para ampliar. Avalie de 1 a 9: 1 é nada atrativo, 5 é médio, 9 é extremamente atrativo. O primeiro e o último destino da viagem aparecem primeiro e não precisam de avaliação.',
+  shot:'A foto fica aqui', missing:'Foto por acrescentar', close:'Fechar', prevPhoto:'Fotografia anterior', nextPhoto:'Fotografia seguinte',
+  low:'Nada atrativo', mid:'Médio', high:'Extremamente',
+  seeResults:'Ver resultados',
+  needAll:(n)=>`Faltam avaliar ${n} destino(s).`,
+  badge:{start:'Primeiro destino',end:'Destino final'},
+  locked:{start:'Os seus clientes chegam por aqui, por isso não é preciso avaliar.',end:'A viagem termina aqui, por isso não é preciso avaliar.'},
+  resTitle:'As suas respostas',
+  protoNote:'Vista do protótipo. No inquérito real, o respondente vê um agradecimento e as respostas seguem para a equipa de investigação.',
+  wTitle:'Peso de cada critério (a partir das suas comparações)',
+  cons:'Consistência', consTop:'Critérios principais', consInfra:'Dentro de infraestrutura e serviços',
+  ok:'Consistente', bad:'A rever',
+  discard:'Seria descartado na análise', yes:'Sim', no:'Não',
+  revise:(a,b,q)=>`As suas respostas sobre "${a}" e "${b}" são as que menos combinam com as restantes (pergunta ${q}).`,
+  reviseBtn:'Rever essa pergunta',
+  beautyRes:'Avaliações de atratividade',
+  json:'Respostas em bruto (JSON)', copy:'Copiar', copied:'Copiado', copyFail:'Cópia indisponível aqui. Selecione o texto e copie.',
+  tools:'Ferramentas do protótipo', fill:'Preencher com respostas de exemplo', fillRand:'Preencher com respostas aleatórias (testa a verificação)', restart:'Recomeçar',
+  submit:'Enviar respostas', sending:'A enviar as suas respostas...',
+  thanksTitle:'Obrigado!', thanksLead:'As suas respostas foram recebidas. Já pode fechar esta página.',
+  failTitle:'As suas respostas ainda não foram enviadas',
+  failLead:'A ligação falhou. As suas respostas continuam nesta página. Tente novamente, por favor.',
+  retry:'Tentar de novo',
+  failBackup:'Se continuar a falhar, copie o texto abaixo e envie-o ao investigador (contacto na primeira página).',
+  crit:{
+   safety:['Segurança','Baixo risco de crime para o visitante'],
+   price:['Preço','Diária de hotel e custo de refeições face ao que o europeu espera'],
+   infra:['Infraestrutura e serviços','Tempo de deslocamento, alojamento e restauração'],
+   activities:['Cultura e atividades','Museus, património e outras atividades além de passear'],
+   beauty:['Atratividade','Quão apelativos são os principais pontos de interesse'],
+   transport:['Tempo de deslocamento','Quanto tempo demora e quão difícil é chegar lá a partir do percurso principal'],
+   lodging:['Alojamento','Disponibilidade de hotéis e qualidade ao padrão internacional'],
+   food:['Restauração','Identidade gastronómica local e qualidade']
+  },
+  dest:{
+   curitiba:['Curitiba','Experiências urbanas, culturais, gastronómicas e de lazer.'],
+   litoral:['Litoral e Ilha do Mel','Praias, paisagens naturais e atividades ao ar livre.'],
+   maringalondrina:['Maringá e Londrina','Grandes polos regionais, com uma catedral emblemática e muita arborização urbana.'],
+   morretes:['Morretes e Antonina','Paisagens de Mata Atlântica e pequenas cidades históricas junto ao litoral.'],
+   camposgerais:['Campos Gerais','Vila Velha, Buraco do Padre e Furnas: formações de arenito impressionantes.'],
+   prudentopolis:['Prudentópolis','Conhecida como a terra das cachoeiras gigantes, com mais de 100 quedas de água.'],
+   guarapuava:['Guarapuava e Entre Rios','Cidade de planalto com a colónia agrícola de Entre Rios, conhecida pelas paisagens e pela pesca esportiva.'],
+   tibagi:['Tibagi e Guartelá','Cânion, trilhos, pinturas rupestres e a cachoeira da Ponte de Pedra.'],
+   ribeirao:['Ribeirão Claro','Represa de Chavantes: desportos náuticos, pesca desportiva e parapente.'],
+   foz:['Foz do Iguaçu','Atrativos naturais de fama internacional e infraestrutura turística.']
+  }
+ }
+};
+
+/* ---------- Questions ---------- */
+const QS=[];
+for(let i=0;i<5;i++) for(let j=i+1;j<5;j++) QS.push({level:'top',i,j,a:GROUPS[i],b:GROUPS[j]});
+for(let i=0;i<3;i++) for(let j=i+1;j<3;j++) QS.push({level:'infra',i,j,a:INFRA[i],b:INFRA[j]});
+const NQ=QS.length; // 13
+const LAST={top:QS.map(q=>q.level).lastIndexOf('top'), infra:NQ-1};
+
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+/* Curitiba (first stop) and Foz (final stop) always come first; the other eight are shuffled. */
+function mkOrder(){return ['curitiba','foz'].concat(shuffle(DEST.filter(d=>!d.locked).map(d=>d.id)));}
+const S={lang:'en',step:'intro',qi:0,consent:false,profile:{type:'',years:'',country:''},ans:{},beauty:{},order:mkOrder(),fromResult:false,msg:'',lb:null,
+  tries:{top:0,infra:0}, rev:null, id:newId(), send:{status:'idle',data:null}};
+const t=()=>T[S.lang];
+
+/* step s in -4..4 : positive = left (A) matters more */
+const stepToValue=s=> s===0?1 : s>0 ? 1+2*s : 1/(1+2*(-s));
+
+/* ---------- Compute ---------- */
+function compute(){
+  const topPairs=[], infPairs=[];
+  QS.forEach((q,k)=>{ const v=stepToValue(S.ans[k]); (q.level==='top'?topPairs:infPairs).push({i:q.i,j:q.j,v,k}); });
+  const At=buildMatrix(5,topPairs), Ai=buildMatrix(3,infPairs);
+  const ct=consistency(At), ci=consistency(Ai);
+  const gi=k=>GROUPS.indexOf(k);
+  const g={};
+  g.safety=ct.w[gi('safety')]; g.price=ct.w[gi('price')];
+  const wInfra=ct.w[gi('infra')];
+  g.transport=wInfra*ci.w[0]; g.lodging=wInfra*ci.w[1]; g.food=wInfra*ci.w[2];
+  g.activities=ct.w[gi('activities')]; g.beauty=ct.w[gi('beauty')];
+  const wt=worstPair(At,ct.w), wi=worstPair(Ai,ci.w);
+  const idx=(level,p)=>QS.findIndex(q=>q.level===level&&q.i===p.i&&q.j===p.j);
+  return {ct,ci,g,
+    worstTop: ct.cr>CR_LIMIT ? {q:idx('top',wt),a:GROUPS[wt.i],b:GROUPS[wt.j]} : null,
+    worstInfra: ci.cr>CR_LIMIT ? {q:idx('infra',wi),a:INFRA[wi.i],b:INFRA[wi.j]} : null};
+}
+
+/* ---------- Consistency check while answering ---------- */
+/* CR of one block of comparisons, the question that fits least, and the answer the other answers point to. */
+function blockCheck(level){
+  const n=level==='top'?5:3, pairs=[];
+  QS.forEach((q,k)=>{ if(q.level===level) pairs.push({i:q.i,j:q.j,v:stepToValue(S.ans[k])}); });
+  const A=buildMatrix(n,pairs), c=consistency(A), wp=worstPair(A,c.w);
+  const q=QS.findIndex(x=>x.level===level&&x.i===wp.i&&x.j===wp.j);
+  const r=c.w[wp.i]/c.w[wp.j];
+  const expected = r>=1 ? Math.min(4,Math.round((r-1)/2)) : -Math.min(4,Math.round((1/r-1)/2));
+  return {cr:c.cr,q,expected};
+}
+/* true = the respondent may move on. false = blocked: S.rev is set and the review page is shown. */
+function runGate(level){
+  const c=blockCheck(level);
+  if(c.cr<=CR_LIMIT){S.rev=null;return true;}
+  S.tries[level]++;
+  if(S.tries[level]>=MAX_TRIES){S.rev=null;return true;}
+  S.rev={level,q:c.q,expected:c.expected};
+  return false;
+}
+function afterGate(level){
+  S.rev=null;
+  if(level==='top'){S.step='q';S.qi=LAST.top+1;} else {S.step='beauty';}
+}
+
+/* ---------- Render ---------- */
+const app=document.getElementById('app');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const STEPS=[4,3,2,1,0,-1,-2,-3,-4];
+
+function progress(){
+  let done=0; const total=NQ+2;
+  if(S.step==='profile') done=0.3;
+  else if(S.step==='q') done=1+S.qi;
+  else if(S.step==='beauty') done=NQ+1;
+  else if(S.step==='result'||S.step==='send') done=total;
+  document.getElementById('bar').style.width=Math.round(100*done/total)+'%';
+}
+
+function viewIntro(){
+  const L=t();
+  return `<section class="card stack">
+    <p class="eyebrow">${esc(L.who)}</p>
+    <h1>${esc(L.introTitle)}</h1>
+    <p class="lead">${esc(L.introLead)}</p>
+    <p>${esc(L.time)}</p>
+    <div class="about"><p><b>${esc(L.aboutTitle)}</b></p><p>${esc(L.about)}</p><p>${esc(L.contact)}</p></div>
+    <label class="check"><input id="consent" type="checkbox" data-act="consent" ${S.consent?'checked':''}><span>${esc(L.consent)}</span></label>
+    <div class="row"><span></span><button class="btn" type="button" data-act="start" ${S.consent?'':'disabled'}>${esc(L.start)}</button></div>
+  </section>`;
+}
+
+function opts(list,val){return `<option value="">${esc(t().choose)}</option>`+list.map((x,i)=>`<option value="${i}" ${String(val)===String(i)?'selected':''}>${esc(x)}</option>`).join('');}
+function viewProfile(){
+  const L=t(), p=S.profile, ok=p.type!==''&&p.years!==''&&p.country!=='';
+  return `<section class="card stack">
+    <h2>${esc(L.profTitle)}</h2><p class="lead">${esc(L.profLead)}</p>
+    <label class="field" for="p-type">${esc(L.qType)}<select id="p-type" data-act="prof" data-k="type">${opts(L.types,p.type)}</select></label>
+    <label class="field" for="p-years">${esc(L.qYears)}<select id="p-years" data-act="prof" data-k="years">${opts(L.years,p.years)}</select></label>
+    <label class="field" for="p-country">${esc(L.qCountry)}<select id="p-country" data-act="prof" data-k="country">${opts(L.countries,p.country)}</select></label>
+    <div class="row"><button class="btn ghost" type="button" data-act="goto" data-v="intro">${esc(L.back)}</button>
+    <button class="btn" type="button" data-act="goto" data-v="q0" ${ok?'':'disabled'}>${esc(L.next)}</button></div>
+  </section>`;
+}
+
+function verbalFor(s){const L=t(); if(s===undefined) return L.pick; if(s===0) return L.verbal[0];
+  const who= s>0?'A':'B'; return `${who}: ${L.verbal[Math.abs(s)>0?Math.abs(s):0].toLowerCase()} (${1+2*Math.abs(s)})`;}
+function viewQ(){
+  const L=t(), q=QS[S.qi], cur=S.ans[S.qi];
+  const A=L.crit[q.a], B=L.crit[q.b];
+  const prompt = q.level==='top'?L.qTop:L.qInfra;
+  const part = L.part1;
+  const last = S.fromResult;
+  return `<section class="card">
+    <p class="eyebrow">${esc(part)} · ${esc(L.qOf(S.qi+1,NQ))}</p>
+    <h2>${esc(prompt)}</h2>
+    <div class="pair">
+      <div class="opt ${cur>0?'on':''}"><b>A · ${esc(A[0])}</b><span>${esc(A[1])}</span></div>
+      <div class="opt ${cur<0?'on':''}"><b>B · ${esc(B[0])}</b><span>${esc(B[1])}</span></div>
+    </div>
+    <div class="scale" role="group" aria-label="${esc(L.pick)}">
+      ${STEPS.map(s=>`<button type="button" data-act="ans" data-v="${s}" aria-pressed="${cur===s}" aria-label="${s===0?esc(L.equal):(s>0?'A ':'B ')+(1+2*Math.abs(s))}">${1+2*Math.abs(s)}</button>`).join('')}
+    </div>
+    <div class="scale-ends"><span>◀ ${esc(L.moreA)}</span><span>${esc(L.equal)}</span><span>${esc(L.moreB)} ▶</span></div>
+    <p class="verdict" aria-live="polite">${esc(verbalFor(cur))}</p>
+    <div class="row">
+      <button class="btn ghost" type="button" data-act="prev">${esc(L.back)}</button>
+      <button class="btn" type="button" data-act="${last?'toresult':'next'}" ${cur===undefined?'disabled':''}>${esc(last?L.toResults:L.next)}</button>
+    </div>
+  </section>`;
+}
+
+/* Review page: all answers of the blocked block, with the one that fits least marked. */
+function suggestText(q,s){
+  const L=t();
+  if(s===0) return `${L.verbal[0].toLowerCase()} (1)`;
+  const name=L.crit[s>0?q.a:q.b][0];
+  return `${name}: ${L.verbal[Math.abs(s)].toLowerCase()} (${1+2*Math.abs(s)})`;
+}
+function viewReview(){
+  const L=t(), rv=S.rev;
+  const rows=QS.map((q,k)=>[q,k]).filter(([q])=>q.level===rv.level).map(([q,k])=>{
+    const cur=S.ans[k], A=L.crit[q.a][0], B=L.crit[q.b][0], worst=k===rv.q;
+    const hint = worst && rv.expected!==cur ? `<p class="rv-h">${esc(L.gateSuggest(suggestText(q,rv.expected)))}</p>` : '';
+    return `<div class="rv ${worst?'worst':''}">
+      <div class="rv-t"><b>${esc(A)}</b><span>·</span><b>${esc(B)}</b></div>
+      <div class="rv-s" role="group" aria-label="${esc(A+' / '+B)}">
+        ${STEPS.map(s=>`<button type="button" data-act="rans" data-k="${k}" data-v="${s}" aria-pressed="${cur===s}" aria-label="${s===0?esc(L.equal):esc((s>0?A:B)+' '+(1+2*Math.abs(s)))}">${1+2*Math.abs(s)}</button>`).join('')}
+      </div>
+      <div class="rv-e"><span>◀ ${esc(A)}</span><span>${esc(L.equal)}</span><span>${esc(B)} ▶</span></div>
+      ${hint}
+    </div>`;}).join('');
+  return `<section class="card">
+    <p class="eyebrow">${esc(L.part1)}</p>
+    <h2>${esc(L.gateTitle)}</h2>
+    <p class="lead">${esc(L.gateLead)}</p>
+    ${rows}
+    <div class="row">
+      <button class="btn ghost" type="button" data-act="prev">${esc(L.back)}</button>
+      <button class="btn" type="button" data-act="recheck">${esc(L.check)}</button>
+    </div>
+  </section>`;
+}
+
+function viewBeauty(){
+  const L=t(); const missing=DEST.filter(d=>!d.locked&&!S.beauty[d.id]).length;
+  const cards=S.order.map(id=>{
+    const d=DEST.find(x=>x.id===id), txt=L.dest[id], cur=S.beauty[id];
+    const lg=S.lang==='pt'?2:1;
+    const strip=d.photos.map((ph,i)=> ph
+      ? `<button type="button" data-act="open" data-id="${id}" data-v="${i}" aria-label="${esc(txt[0]+': '+ph[lg])}"><img src="${IMG+ph[0]}.jpg" alt="${esc(txt[0]+': '+ph[lg])}" loading="lazy"></button>`
+      : `<div class="ph">${esc(L.missing)}</div>`).join('');
+    const badge = d.locked ? `<span class="badge">${esc(L.badge[d.role])}</span>` : '';
+    const foot = d.locked
+      ? `<p style="margin:.6rem 0 0;color:var(--muted);font-size:.92rem">${esc(L.locked[d.role])}</p>`
+      : `<div class="rate" role="group" aria-label="${esc(txt[0])}">${[1,2,3,4,5,6,7,8,9].map(n=>`<button type="button" data-act="rate" data-id="${id}" data-v="${n}" aria-pressed="${cur===n}">${n}</button>`).join('')}</div>
+        <div class="rate-ends"><span>${esc(L.low)}</span><span>${esc(L.mid)}</span><span>${esc(L.high)}</span></div>`;
+    return `<article class="dest">
+      <div class="strip">${strip}</div>
+      <div class="body">${badge}<b style="font-family:var(--display);font-size:1.1rem">${esc(txt[0])}</b><span>${esc(txt[1])}</span>${foot}
+      </div></article>`;}).join('');
+  return `<section class="card">
+    <p class="eyebrow">${esc(L.part2)}</p><h2>${esc(L.beautyTitle)}</h2><p class="lead">${esc(L.beautyLead)}</p>
+    <div class="dests">${cards}</div>
+    <div class="row"><button class="btn ghost" type="button" data-act="prev">${esc(L.back)}</button>
+      <span style="color:var(--muted);font-size:.9rem">${missing?esc(L.needAll(missing)):''}</span>
+      ${isTest()
+        ? `<button class="btn" type="button" data-act="toresult" ${missing?'disabled':''}>${esc(L.seeResults)}</button>`
+        : `<button class="btn" type="button" data-act="submit" ${missing?'disabled':''}>${esc(L.submit)}</button>`}</div>
+  </section>`;
+}
+
+function payload(r){
+  const w={}; Object.keys(r.g).forEach(k=>w[k]=+r.g[k].toFixed(4));
+  return {
+    id:S.id, language:S.lang, timestamp:new Date().toISOString(),
+    profile:{type:t().types[S.profile.type],years:t().years[S.profile.years],country:t().countries[S.profile.country]},
+    judgments:QS.map((q,k)=>({level:q.level,left:q.a,right:q.b,step:S.ans[k],value:+stepToValue(S.ans[k]).toFixed(4)})),
+    weights:w, consistency:{top:+r.ct.cr.toFixed(3),infra:+r.ci.cr.toFixed(3),threshold:CR_LIMIT},
+    checkTries:{top:S.tries.top,infra:S.tries.infra},
+    discard:(r.ct.cr>CR_LIMIT)||(r.ci.cr>CR_LIMIT),
+    attractiveness:S.beauty
+  };
+}
+function viewResult(){
+  const L=t(), r=compute();
+  const crit=['safety','price','transport','lodging','food','activities','beauty'];
+  const sorted=crit.slice().sort((a,b)=>r.g[b]-r.g[a]);
+  const name=k=>L.crit[k][0];
+  const bars=sorted.map(k=>`<div class="bar"><span>${esc(name(k))}</span><span class="track"><i style="width:${(r.g[k]*100/ r.g[sorted[0]]).toFixed(1)}%"></i></span><em>${(r.g[k]*100).toFixed(1)}%</em></div>`).join('');
+  const pill=cr=>`<span class="pill ${cr<=CR_LIMIT?'good':'warn'}">${cr<=CR_LIMIT?esc(L.ok):esc(L.bad)} · CR ${cr.toFixed(3)}</span>`;
+  const notes=[r.worstTop,r.worstInfra].filter(Boolean).map(w=>`<div class="note stack"><p>${esc(L.revise(name(w.a),name(w.b),w.q+1))}</p><button class="btn ghost" type="button" data-act="revq" data-v="${w.q}">${esc(L.reviseBtn)}</button></div>`).join('');
+  const rows=Object.keys(S.beauty).sort((a,b)=>S.beauty[b]-S.beauty[a]).map(id=>`<tr><td>${esc(L.dest[id][0])}</td><td class="n">${S.beauty[id]}</td></tr>`).join('');
+  const pl=payload(r);
+  const json=JSON.stringify(pl,null,2);
+  return `<section class="card stack">
+    <h2>${esc(L.resTitle)}</h2>
+    <p class="proto">${esc(L.protoNote)}</p>
+    <h3>${esc(L.wTitle)}</h3><div class="bars">${bars}</div>
+    <h3>${esc(L.cons)}</h3>
+    <p>${esc(L.consTop)}: ${pill(r.ct.cr)}</p><p>${esc(L.consInfra)}: ${pill(r.ci.cr)}</p>
+    <p>${esc(L.discard)}: <b>${esc(pl.discard?L.yes:L.no)}</b></p>
+    ${notes}
+    <h3>${esc(L.beautyRes)}</h3><table><tbody>${rows}</tbody></table>
+    <h3>${esc(L.json)}</h3>
+    <textarea id="json" readonly>${esc(json)}</textarea>
+    <div class="row"><button class="btn ghost" type="button" data-act="prev">${esc(L.back)}</button><button class="btn" type="button" data-act="copy" id="copybtn">${esc(L.copy)}</button></div>
+    <p id="copymsg" aria-live="polite" style="color:var(--muted);font-size:.88rem"></p>
+  </section>`;
+}
+
+/* ---------- Sending (published mode) ---------- */
+/* The JSON is built once and kept, so a retry sends exactly the same answers with the same id. */
+async function sendAnswers(){
+  if(!S.send.data) S.send.data=payload(compute());
+  S.send.status='sending'; render();
+  try{
+    /* text/plain keeps this a "simple" request (no CORS preflight), which Apps Script requires. */
+    const resp=await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(S.send.data),redirect:'follow',referrerPolicy:'no-referrer',credentials:'omit'});
+    const out=await resp.json();
+    if(!resp.ok||!out||out.ok!==true) throw new Error('rejected');
+    S.send.status='sent';
+  }catch(_){ S.send.status='failed'; }
+  render(); window.scrollTo(0,0);
+}
+function viewSend(){
+  const L=t(), st=S.send.status;
+  if(st==='sent') return `<section class="card stack">
+    <h1>${esc(L.thanksTitle)}</h1><p class="lead">${esc(L.thanksLead)}</p>
+    <div class="about"><p>${esc(L.contact)}</p></div>
+  </section>`;
+  if(st==='failed') return `<section class="card stack">
+    <h2>${esc(L.failTitle)}</h2>
+    <p class="note" role="alert">${esc(L.failLead)}</p>
+    <div class="row"><span></span><button class="btn" type="button" data-act="retry">${esc(L.retry)}</button></div>
+    <p class="lead">${esc(L.failBackup)}</p>
+    <textarea id="json" readonly>${esc(JSON.stringify(S.send.data,null,2))}</textarea>
+    <div class="row"><span></span><button class="btn ghost" type="button" data-act="copy" id="copybtn">${esc(L.copy)}</button></div>
+    <p id="copymsg" aria-live="polite" style="color:var(--muted);font-size:.88rem"></p>
+  </section>`;
+  return `<section class="card"><p class="lead" aria-live="polite">${esc(L.sending)}</p></section>`;
+}
+
+function lbList(id){return DEST.find(d=>d.id===id).photos.map((p,i)=>p?i:-1).filter(i=>i>=0);}
+function viewLightbox(){
+  const L=t(), d=DEST.find(x=>x.id===S.lb.id), ph=d.photos[S.lb.i], lg=S.lang==='pt'?2:1;
+  const list=lbList(S.lb.id), pos=list.indexOf(S.lb.i)+1;
+  return `<div class="lb" role="dialog" aria-modal="true" aria-label="${esc(L.dest[d.id][0])}" data-act="lbclose">
+    <button class="lb-x" type="button" data-act="lbclose" aria-label="${esc(L.close)}">×</button>
+    <button type="button" data-act="lbnav" data-v="-1" aria-label="${esc(L.prevPhoto)}">‹</button>
+    <figure data-act="noop"><img src="${IMG+ph[0]}.jpg" alt="${esc(L.dest[d.id][0]+': '+ph[lg])}"><figcaption>${esc(L.dest[d.id][0])} · ${esc(ph[lg])} (${pos}/${list.length})</figcaption></figure>
+    <button type="button" data-act="lbnav" data-v="1" aria-label="${esc(L.nextPhoto)}">›</button>
+  </div>`;
+}
+function lbMove(dir){const list=lbList(S.lb.id);const k=(list.indexOf(S.lb.i)+dir+list.length)%list.length;S.lb.i=list[k];}
+let lastKey='';
+function render(){
+  const L=t();
+  document.documentElement.lang=S.lang==='pt'?'pt-PT':'en';
+  document.title=L.brand;
+  document.getElementById('brand').textContent=L.brand;
+  ['en','pt'].forEach(l=>document.getElementById('lang-'+l).setAttribute('aria-pressed',String(S.lang===l)));
+  let h='';
+  if(S.step==='intro') h=viewIntro();
+  else if(S.step==='profile') h=viewProfile();
+  else if(S.step==='q') h=S.rev?viewReview():viewQ();
+  else if(S.step==='beauty') h=viewBeauty();
+  else if(S.step==='send') h=viewSend();
+  else if(isTest()) h=viewResult();
+  else {S.step='beauty'; h=viewBeauty();}
+  if(isTest()) h+=`<footer class="tools"><span>${esc(L.tools)}:</span><button type="button" data-act="fill">${esc(L.fill)}</button><button type="button" data-act="fillrand">${esc(L.fillRand)}</button><button type="button" data-act="restart">${esc(L.restart)}</button></footer>`;
+  if(S.lb) h+=viewLightbox();
+  app.className='wrap'+(S.step==='beauty'?' wide':'');
+  app.innerHTML=h; progress();
+  const key=S.step+':'+S.qi+':'+(S.rev?'r':''); if(key!==lastKey){lastKey=key; if(S.step!=='intro') window.scrollTo(0,0);}
+  if(S.lb){const x=document.querySelector('.lb-x'); if(x) x.focus();}
+}
+
+/* ---------- Events ---------- */
+function resetCheck(){S.tries={top:0,infra:0};S.rev=null;}
+function fillExample(){
+  const hid={safety:.30,price:.15,infra:.25,activities:.12,beauty:.18}, hin={transport:.30,lodging:.40,food:.30};
+  QS.forEach((q,k)=>{
+    const wa=(q.level==='top'?hid:hin)[q.a], wb=(q.level==='top'?hid:hin)[q.b];
+    const r=Math.max(wa,wb)/Math.min(wa,wb);
+    let s=Math.round((r-1)/2 + (Math.random()-.5)*1.4); s=Math.max(0,Math.min(4,s));
+    S.ans[k]= wa>=wb ? s : -s;
+  });
+  DEST.filter(d=>!d.locked).forEach(d=>S.beauty[d.id]=3+Math.floor(Math.random()*7));
+  S.profile={type:'0',years:'2',country:'0'}; S.consent=true; S.step='result'; S.fromResult=false; resetCheck();
+}
+/* Random answers, then jump to the last question of the first block so the check can be tried. */
+function fillRandom(){
+  QS.forEach((q,k)=>{S.ans[k]=Math.floor(Math.random()*9)-4;});
+  S.profile={type:'0',years:'2',country:'0'}; S.consent=true; S.step='q'; S.qi=LAST.top; S.fromResult=false; resetCheck();
+}
+app.addEventListener('change',e=>{
+  const el=e.target;
+  if(el.dataset.act==='consent'){S.consent=el.checked; render(); document.getElementById('consent')?.focus();}
+  if(el.dataset.act==='prof'){S.profile[el.dataset.k]=el.value; const id=el.id; render(); document.getElementById(id)?.focus();}
+});
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]'); if(!b||b.tagName==='SELECT'||b.type==='checkbox') return;
+  const a=b.dataset.act, v=b.dataset.v;
+  if(a==='noop') return;
+  if(a==='lang'){S.lang=v;}
+  else if(a==='start'){S.step='profile';}
+  else if(a==='goto'){ if(v==='q0'){S.step='q';S.qi=0;} else S.step=v; }
+  else if(a==='ans'){S.ans[S.qi]=parseInt(v,10);}
+  else if(a==='rans'){S.ans[parseInt(b.dataset.k,10)]=parseInt(v,10);}
+  else if(a==='next'){
+    const level = S.qi===LAST.top?'top' : S.qi===LAST.infra?'infra' : null;
+    if(level){ if(runGate(level)) afterGate(level); }
+    else S.qi++;
+  }
+  else if(a==='recheck'){ const level=S.rev.level; if(runGate(level)) afterGate(level); }
+  else if(a==='prev'){
+    if(S.rev){ S.qi=LAST[S.rev.level]; S.rev=null; }
+    else if(S.step==='q'){ if(S.fromResult){S.fromResult=false;S.step='result';} else if(S.qi>0) S.qi--; else S.step='profile'; }
+    else if(S.step==='beauty'){S.step='q';S.qi=NQ-1;}
+    else if(S.step==='result'){S.step='beauty';}
+  }
+  else if(a==='open'){S.lb={id:b.dataset.id,i:parseInt(v,10)};}
+  else if(a==='lbclose'){S.lb=null;}
+  else if(a==='lbnav'){lbMove(parseInt(v,10));}
+  else if(a==='rate'){ if(DEST.find(x=>x.id===b.dataset.id).locked) return; S.beauty[b.dataset.id]=parseInt(v,10);}
+  else if(a==='toresult'){S.step='result';S.fromResult=false;}
+  else if(a==='revq'){S.step='q';S.qi=parseInt(v,10);S.fromResult=true;}
+  else if(a==='fill'){fillExample();}
+  else if(a==='fillrand'){fillRandom();}
+  else if(a==='restart'){Object.assign(S,{step:'intro',qi:0,consent:false,profile:{type:'',years:'',country:''},ans:{},beauty:{},order:mkOrder(),fromResult:false,id:newId(),send:{status:'idle',data:null}}); resetCheck();}
+  else if(a==='submit'){ if(DEST.some(d=>!d.locked&&!S.beauty[d.id])) return; S.step='send'; sendAnswers(); return; }
+  else if(a==='retry'){ sendAnswers(); return; }
+  else if(a==='copy'){
+    const ta=document.getElementById('json'), msg=document.getElementById('copymsg');
+    const fail=()=>{ta.focus();ta.select();msg.textContent=t().copyFail;};
+    try{ navigator.clipboard.writeText(ta.value).then(()=>{msg.textContent=t().copied;}).catch(fail); }catch(_){fail();}
+    return;
+  }
+  const y=window.scrollY;
+  render();
+  window.scrollTo(0,y);
+  if(a==='goto'||a==='next'||a==='prev'||a==='start'||a==='toresult'||a==='revq'||a==='fill'||a==='fillrand'||a==='restart'||a==='recheck') window.scrollTo(0,0);
+});
+document.addEventListener('keydown',e=>{
+  if(!S.lb) return;
+  if(e.key==='Escape') S.lb=null; else if(e.key==='ArrowRight') lbMove(1); else if(e.key==='ArrowLeft') lbMove(-1); else return;
+  const y=window.scrollY; render(); window.scrollTo(0,y);
+});
+window.addEventListener('hashchange',()=>render());
+render();
+</script>
+</body>
+</html>
