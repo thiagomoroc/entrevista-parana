@@ -182,7 +182,7 @@ function worstPair(A,w){
 const CR_LIMIT=0.10;   // a block of comparisons is accepted when CR is at or below this
 const MAX_TRIES=3;     // the respondent is blocked on checks 1 and 2; on check 3 the page lets them through (flagged by CR in the data)
 /* Answers go to a Google Apps Script web app that appends one row per response to the survey's own Google Sheet. */
-const ENDPOINT='__ENDPOINT__';
+const ENDPOINT='https://script.google.com/macros/s/AKfycbwvpw5BXumJ4RUlWc6OUvXDCMgFWklcbV3-mGBJmG1Co1bisMYlYIMB4jXpgW3JepnTOQ/exec';
 /* Published mode: no prototype tools, no results/JSON screen. Add #test to the address to get them back. */
 const isTest=()=>location.hash==='#test';
 function newId(){
